@@ -5,13 +5,15 @@ Pulls iCloud Contacts for an account. No dependencies. No user notification. Ver
 
 ***Example Usage***: python iCloudContacts.py
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Input: AppleID or DSID
+```
+Input: AppleID or DSID
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Input: Password or MMeAuthToken
+Input: Password or MMeAuthToken
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Output: John Doe (914) 879-8824
+Output: John Doe (914) 879-8824
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Output: Found 1 contacts for user bobloblaw@icloud.com! Wrote contacts to bobloblaw@icloud.com.txt
+Output: Found 1 contacts for user bobloblaw@icloud.com! Wrote contacts to bobloblaw@icloud.com.txt
+```
 
 
 
