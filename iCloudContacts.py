@@ -74,6 +74,8 @@ def getCardData(dsid, token, emailaddr):
     response = urllib2.urlopen(request)
     zebra = ET.fromstring(response.read())
     i = 0
+    contactList = []
+    phoneList = []
     returnValue = ""
     for response in zebra:
         vcard = response.find('{DAV:}propstat').find('{DAV:}prop').find('{urn:ietf:params:xml:ns:carddav}address-data').text
@@ -86,10 +88,11 @@ def getCardData(dsid, token, emailaddr):
                     for z in re.findall("\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}", y): #great regex for finding phone numbers, credits to Auguste on stack overflow, Oct 2010
                         returnValue += "%s\n" % z
                 if y.startswith("END:VCARD"):
-                    returnValue += "---\n"
+                    returnValue += "---"
+    returnValue = '---\n'.join(sorted(returnValue.split("---"))) #sorts based on name (first id)
     with open('%s.txt' % emailaddr, 'w') as output:
         output.write(returnValue.encode('ascii', 'ignore'))
-    return returnValue + "Found %s contacts for user %s! Wrote contacts to %s.txt" % (i, emailaddr, emailaddr)
+    return returnValue + "\nFound %s contacts for user %s! Wrote contacts to %s.txt" % (i, emailaddr, emailaddr)
 
 if __name__ == '__main__':
     user = raw_input("Apple ID: ")
