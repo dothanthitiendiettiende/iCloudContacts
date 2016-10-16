@@ -82,16 +82,16 @@ def getCardData(dsid, token, emailaddr):
         if vcard:
             for y in vcard.splitlines():
                 if y.startswith("FN:"):
-                    returnValue += "%s\n" % y[3:] 
+                    returnValue += "\033[1m%s\033[0m\n" % y[3:] 
                 if y.startswith("TEL;"):
                     i+=1
                     z = y.split("type")[-1].split(":")[-1]
-                    returnValue += "%s\n" % z
+                    returnValue += "[\033[94m%s\033[0m]\n" % z
                 if y.startswith("END:VCARD"):
                     returnValue += "---"
     returnValue = '---\n'.join(sorted(returnValue.split("---"))) #sorts based on name (first id)
     with open('%s.txt' % emailaddr, 'w') as output:
-        output.write(returnValue.encode('ascii', 'ignore'))
+        output.write(returnValue.encode('ascii', 'ignore').replace("[1m", "").replace("[0m", "").replace("[94m", ""))
     return returnValue + "\nFound %s contacts for user %s! Wrote contacts to %s.txt" % (i, emailaddr, emailaddr)
 
 if __name__ == '__main__':
