@@ -77,21 +77,26 @@ def getCardData(dsid, token, emailaddr):
     contactList = []
     phoneList = []
     returnValue = ""
+    noColor = ""
     for response in zebra:
         vcard = response.find('{DAV:}propstat').find('{DAV:}prop').find('{urn:ietf:params:xml:ns:carddav}address-data').text
         if vcard:
             for y in vcard.splitlines():
                 if y.startswith("FN:"):
-                    returnValue += "\033[1m%s\033[0m\n" % y[3:] 
+                    returnValue += "\033[1m%s\033[0m\n" % y[3:]
+                    noColor += "%s\n" % y[3:]
                 if y.startswith("TEL;"):
                     i+=1
                     z = y.split("type")[-1].split(":")[-1]
                     returnValue += "[\033[94m%s\033[0m]\n" % z
+                    noColor += "%s\n" % z
                 if y.startswith("END:VCARD"):
                     returnValue += "---"
+                    noColor += "---"
     returnValue = '---\n'.join(sorted(returnValue.split("---"))) #sorts based on name (first id)
+    noColor = '---\n'.join(sorted(noColor.split("---")))
     with open('%s.txt' % emailaddr, 'w') as output:
-        output.write(returnValue.encode('ascii', 'ignore').replace("[1m", "").replace("[0m", "").replace("[94m", ""))
+        output.write(noColor.encode('ascii', 'ignore'))
     return returnValue + "\nFound %s contacts for user %s! Wrote contacts to %s.txt" % (i, emailaddr, emailaddr)
 
 if __name__ == '__main__':
