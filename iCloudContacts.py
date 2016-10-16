@@ -85,8 +85,8 @@ def getCardData(dsid, token, emailaddr):
                     returnValue += "%s\n" % y[3:] 
                 if y.startswith("TEL;"):
                     i+=1
-                    for z in re.findall("\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}", y): #great regex for finding phone numbers, credits to Auguste on stack overflow, Oct 2010
-                        returnValue += "%s\n" % z
+                    z = y.split("type")[-1].split(":")[-1]
+                    returnValue += "%s\n" % z
                 if y.startswith("END:VCARD"):
                     returnValue += "---"
     returnValue = '---\n'.join(sorted(returnValue.split("---"))) #sorts based on name (first id)
