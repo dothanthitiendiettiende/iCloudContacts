@@ -74,30 +74,21 @@ def getCardData(dsid, token, emailaddr):
     response = urllib2.urlopen(request)
     zebra = ET.fromstring(response.read())
     i = 0
-    contactList = []
-    phoneList = []
-    returnValue = ""
-    noColor = ""
+    contactList, phoneList, cards = [], [], []
     for response in zebra:
+        tel, contact, email = [], [], []
+        name = ""
         vcard = response.find('{DAV:}propstat').find('{DAV:}prop').find('{urn:ietf:params:xml:ns:carddav}address-data').text
         if vcard:
             for y in vcard.splitlines():
                 if y.startswith("FN:"):
-                    returnValue += "\033[1m%s\033[0m\n" % y[3:]
-                    noColor += "%s\n" % y[3:]
+                    name = y[3:]
                 if y.startswith("TEL;"):
-                    i+=1
-                    z = y.split("type")[-1].split(":")[-1]
-                    returnValue += "[\033[94m%s\033[0m]\n" % z
-                    noColor += "%s\n" % z
-                if y.startswith("END:VCARD"):
-                    returnValue += "---"
-                    noColor += "---"
-    returnValue = '---\n'.join(sorted(returnValue.split("---"))) #sorts based on name (first id)
-    noColor = '---\n'.join(sorted(noColor.split("---")))
-    with open('%s.txt' % emailaddr, 'w') as output:
-        output.write(noColor.encode('ascii', 'ignore'))
-    return returnValue + "\nFound %s contacts for user %s! Wrote contacts to %s.txt" % (i, emailaddr, emailaddr)
+                    tel.append((y.split("type")[-1].split(":")[-1].replace("(", "").replace(")", "").replace(" ", "").replace("-", "").encode("ascii", "ignore")))
+                if y.startswith("EMAIL;") or y.startswith("item1.EMAIL;"):
+                    email.append(y.split(":")[-1])
+            cards.append(([name], tel, email))
+    return sorted(cards)
 
 if __name__ == '__main__':
     user = raw_input("Apple ID: ")
@@ -115,5 +106,11 @@ if __name__ == '__main__':
     except ValueError:
         print tokenTime
         sys.exit()
-
-    print getCardData(dsid, token, emailaddr) #start chain
+    cardData = getCardData(dsid, token, emailaddr)
+    for vcard in cardData:
+        data = "\033[1m%s\033[0m\n" % vcard[0][0]
+        for numbers in vcard[1]:
+            data += "[\033[94m%s\033[0m]\n" % numbers
+        for emails in vcard[2]:
+            data += "[\033[93m%s\033[0m]\n" % emails
+        print data,
